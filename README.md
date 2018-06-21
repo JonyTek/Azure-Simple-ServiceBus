@@ -1,4 +1,4 @@
-Simple Service Bus is a simple generic wrapper around Azures message bus. It provides a simple typed interface and allows you to write clean simple hanlders with minimal configuration.
+Simple Service Bus is a simple generic wrapper around Azures Message Bus. It provides a simple typed interface and allows you to write clean simple handlers with minimal configuration.
 
 Simply setup your send bus
 ```csharp
