@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Azure.ServiceBus.Bus;
 using Azure.ServiceBus.Messages;
 using Azure.ServiceBus.Models;
-using Microsoft.Azure.ServiceBus;
 
 namespace Azure.ServiceBus.Handlers.Handlers
 {

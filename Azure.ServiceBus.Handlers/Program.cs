@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Azure.ServiceBus.Bus;
 using Azure.ServiceBus.Handlers.Handlers;
 using Azure.ServiceBus.Messages;
-using Microsoft.Azure.ServiceBus;
 
 namespace Azure.ServiceBus.Handlers
 {
@@ -28,11 +26,6 @@ namespace Azure.ServiceBus.Handlers
             Console.ReadKey();
 
             bus.Dispose();
-        }
-
-        private static Task ExceptionReceivedHandler(ExceptionReceivedEventArgs args)
-        {
-            return Task.CompletedTask;
         }
     }
 }
