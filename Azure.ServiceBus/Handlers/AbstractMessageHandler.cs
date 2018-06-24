@@ -20,7 +20,11 @@ namespace Azure.ServiceBus.Handlers
             var context = new MessageContext<T> {Message = instance, Context = message};
 
             await Handle(context, token);
-            await client.CompleteAsync(message.SystemProperties.LockToken);
+        }
+
+        public virtual Task OnException(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
+        {
+            return Task.CompletedTask;
         }
     }
 }

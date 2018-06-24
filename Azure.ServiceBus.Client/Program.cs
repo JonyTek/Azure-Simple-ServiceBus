@@ -19,12 +19,40 @@ namespace Azure.ServiceBus.Client
                 .AddRoute<MyQueueMessage>("my-message-queue")
                 .AddRoute<MyTopicMessage>("my-message-topic");
 
-            var bus = new SendOnlyBus(new BusConfigutration(), routes);
+            while (true)
+            {
+                Console.WriteLine("Please enter option:");
+                Console.WriteLine("Q: queue");
+                Console.WriteLine("T: topic");
+                Console.WriteLine("X: exit");
+                Console.WriteLine();
 
-            await bus.Send(new MyQueueMessage { SomeString = "From my queue!" });
-            await bus.Publish(new MyTopicMessage { SomeString = "From my topic!" });
+                var option = Console.ReadKey();
+                var bus = new SendOnlyBus(new BusConfigutration(), routes);
 
-            Console.ReadKey();
+                switch (option.Key)
+                {
+                    case ConsoleKey.X:
+                        return;
+                    case ConsoleKey.Q:
+                        Console.WriteLine();
+                        Console.WriteLine($"Please enter body as text.");
+                        await bus.Send(new MyQueueMessage {SomeString = Console.ReadLine()});
+                        continue;
+                    case ConsoleKey.T:
+                        Console.WriteLine();
+                        Console.WriteLine($"Please enter body as text.");
+                        await bus.Publish(new MyTopicMessage {SomeString = Console.ReadLine()});
+                        continue;
+                    default:
+                        continue;
+                }
+
+
+
+                //await bus.Send(new MyQueueMessage { SomeString = "From my queue!" });
+                //await bus.Publish(new MyTopicMessage { SomeString = "From my topic!" });
+            }
         }
     }
 }

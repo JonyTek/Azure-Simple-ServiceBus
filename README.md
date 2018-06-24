@@ -19,7 +19,11 @@ await bus.Publish(new MyTopicMessage { SomeString = "From my topic!" });
 Simply setup your receive bus
 ```csharp
 //Basic endpoint configuration
-var defaultHandlerConfig = new HandlerConfiguration {MaxConcurrentCalls = 10};
+var defaultHandlerConfig = new HandlerConfiguration
+{
+    MaxConcurrentCalls = 10,
+    AutoComplete = true
+};
 
 //Initialise your receive bus
 IRecieveOnlyBus bus = RecieveOnlyBus.Initialise(new BusConfigutration())
@@ -61,11 +65,23 @@ And create your handlers
 //Queue
 public class MyMessageQueueMessageHandler : AbstractQueueMessageHandler<MyQueueMessage>
 {
+    //Handler impl
     public override Task Handle(MessageContext<MyQueueMessage> messageContext, CancellationToken token)
     {
         Console.WriteLine("MyMessageQueueMessageHandle " + messageContext.Message.SomeString);
-
         return Task.FromResult(0);
+    }
+
+    //Optional OnException handler
+    public override Task OnException(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
+    {
+        Console.WriteLine($"Exception: {exceptionReceivedEventArgs.Exception.Message}");
+        Console.WriteLine($"Action: {exceptionReceivedEventArgs.ExceptionReceivedContext.Action}");
+        Console.WriteLine($"ClientId: {exceptionReceivedEventArgs.ExceptionReceivedContext.ClientId}");
+        Console.WriteLine($"Endpoint: {exceptionReceivedEventArgs.ExceptionReceivedContext.Endpoint}");
+        Console.WriteLine($"EntityPath: {exceptionReceivedEventArgs.ExceptionReceivedContext.EntityPath}");
+
+        return base.OnException(exceptionReceivedEventArgs);
     }
 }
 
@@ -82,11 +98,24 @@ public class MyMessageTopicMessageHandler : AbstractTopicMessageHandler<MyTopicM
         this.bus = bus;
     }
 
+    //Handler impl
     public override async Task Handle(MessageContext<MyTopicMessage> messageContext, CancellationToken token)
     {
         Console.WriteLine("MyMessageTopicMessageHandle " + messageContext.Message.SomeString);
 
         await bus.Send(new MyQueueMessage {SomeString = " Resent!!"});
+    }
+    
+    //Optional OnException handler
+    public override Task OnException(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
+    {
+        Console.WriteLine($"Exception: {exceptionReceivedEventArgs.Exception.Message}");
+        Console.WriteLine($"Action: {exceptionReceivedEventArgs.ExceptionReceivedContext.Action}");
+        Console.WriteLine($"ClientId: {exceptionReceivedEventArgs.ExceptionReceivedContext.ClientId}");
+        Console.WriteLine($"Endpoint: {exceptionReceivedEventArgs.ExceptionReceivedContext.Endpoint}");
+        Console.WriteLine($"EntityPath: {exceptionReceivedEventArgs.ExceptionReceivedContext.EntityPath}");
+
+        return base.OnException(exceptionReceivedEventArgs);
     }
 }
 ```

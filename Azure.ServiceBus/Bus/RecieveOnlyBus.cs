@@ -34,7 +34,7 @@ namespace Azure.ServiceBus.Bus
             {
                 container = new Container(x =>
                 {
-                    x.For<ISendOnlyBus>().Use(new SendOnlyBus(configuration, routes));
+                    x.For<ISendOnlyBus>().Use(new SendOnlyBus(configuration, routes)).Singleton();
                 })
             };
 
@@ -51,7 +51,7 @@ namespace Azure.ServiceBus.Bus
             var handlerConfiguration = config ?? new HandlerConfiguration();
 
             client.RegisterMessageHandler((message, token) => handler.Handle(message, client, token),
-                handlerConfiguration.Options());
+                handlerConfiguration.Options(handler.OnException));
 
             if (queueClients.ContainsKey(route))
             {
@@ -75,7 +75,7 @@ namespace Azure.ServiceBus.Bus
                 var client = new SubscriptionClient(configuration.ConnectionString, route, handler.Subscription);
 
                 client.RegisterMessageHandler((message, token) => handler.Handle(message, client, token),
-                    handlerConfiguration.Options());
+                    handlerConfiguration.Options(handler.OnException));
 
                 if (topicClients.ContainsKey(route))
                 {

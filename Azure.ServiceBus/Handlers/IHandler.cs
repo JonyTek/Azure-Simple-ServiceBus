@@ -9,5 +9,7 @@ namespace Azure.ServiceBus.Handlers
     {
         Task Handle<TClient>(Message message, TClient client, CancellationToken token)
             where TClient : IReceiverClient;
+
+        Task OnException(ExceptionReceivedEventArgs exceptionReceivedEventArgs);
     }
 }

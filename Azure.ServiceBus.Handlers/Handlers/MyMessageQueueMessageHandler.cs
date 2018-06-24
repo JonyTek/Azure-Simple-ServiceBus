@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.ServiceBus.Messages;
 using Azure.ServiceBus.Models;
+using Microsoft.Azure.ServiceBus;
 
 namespace Azure.ServiceBus.Handlers.Handlers
 {
@@ -13,6 +14,17 @@ namespace Azure.ServiceBus.Handlers.Handlers
             Console.WriteLine("MyMessageQueueMessageHandle " + messageContext.Message.SomeString);
 
             return Task.FromResult(0);
+        }
+
+        public override Task OnException(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
+        {
+            Console.WriteLine($"Exception: {exceptionReceivedEventArgs.Exception.Message}");
+            Console.WriteLine($"Action: {exceptionReceivedEventArgs.ExceptionReceivedContext.Action}");
+            Console.WriteLine($"ClientId: {exceptionReceivedEventArgs.ExceptionReceivedContext.ClientId}");
+            Console.WriteLine($"Endpoint: {exceptionReceivedEventArgs.ExceptionReceivedContext.Endpoint}");
+            Console.WriteLine($"EntityPath: {exceptionReceivedEventArgs.ExceptionReceivedContext.EntityPath}");
+
+            return base.OnException(exceptionReceivedEventArgs);
         }
     }
 }
